@@ -4,8 +4,8 @@ set -eux
 bazel build //:for_all_platforms
 
 mv bazel-out/linux_aarch64-opt/bin/toml2json toml2json_linux_arm64
-mv bazel-out/linux_x86_64-opt/bin/toml2json toml2json_linux_x86_64
+mv bazel-out/linux_x86_64-opt/bin/toml2json toml2json_linux_amd64
 mv bazel-out/macos_aarch64-opt/bin/toml2json toml2json_darwin_arm64
-mv bazel-out/macos_x86_64-opt/bin/toml2json toml2json_darwin_x86_64
+mv bazel-out/macos_x86_64-opt/bin/toml2json toml2json_darwin_amd64
 
 shasum -a 256 toml2json_* > SHA256.txt
