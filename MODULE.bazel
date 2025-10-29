@@ -1,0 +1,50 @@
+bazel_dep(name = "bazel_lib", version = "3.0.0")
+bazel_dep(name = "platforms", version = "1.0.0")
+
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.0.0")
+cc_toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(cc_toolchains, "zig_sdk")
+
+register_toolchains(
+    "@zig_sdk//toolchain/...",
+    "@zig_sdk//libc_aware/toolchain/...",
+)
+
+TRIPLES = [
+    "aarch64-apple-darwin",
+    "x86_64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu",
+    # TODO(zbarsky): Enable windows?
+    # "x86_64-pc-windows-gnu",
+    # "aarch64-pc-windows-msvc",
+]
+
+bazel_dep(name = "rules_rust", version = "0.66.0")
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2024",
+    extra_target_triples = TRIPLES,
+    versions = ["1.89.0"],
+)
+use_repo(rust, "rust_toolchains")
+
+register_toolchains("@rust_toolchains//:all")
+
+
+bazel_dep(name = "rules_rs", version = "1.0.0")
+archive_override(
+    module_name = "rules_rs",
+    integrity = "sha256-FI1d2XbV6AcyYbcMbCcmQb2R3NssJI1pdUrN/WthVo4=",
+    strip_prefix = "rules_rs-046184fbe64fa57ce93b6108aa7be6ac1f602ac5",
+    urls = ["https://github.com/dzbarsky/rules_rs/archive/046184fbe64fa57ce93b6108aa7be6ac1f602ac5.tar.gz"],
+)
+
+crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
+crate.from_cargo(
+    cargo_lock = "//:Cargo.lock",
+    cargo_toml = "//:Cargo.toml",
+    platform_triples = TRIPLES,
+)
+use_repo(crate, "crates")

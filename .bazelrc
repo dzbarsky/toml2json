@@ -1,0 +1,15 @@
+common --experimental_platform_in_output_dir
+
+common --incompatible_enable_cc_toolchain_resolution
+common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --host_action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --incompatible_strict_action_env
+
+common -c opt
+common --@rules_rust//:extra_rustc_flags=-Clto=fat
+common --@rules_rust//:extra_rustc_flags=-Cstrip=symbols
+common --@rules_rust//:extra_rustc_flags=-Ccodegen-units=1
+common --@rules_rust//:extra_rustc_flags=-Cpanic=abort
+
+

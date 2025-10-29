@@ -1,0 +1,39 @@
+load("@bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+load("//:defs.bzl", "PLATFORMS", "platform_name")
+
+rust_binary(
+    name = "toml2json",
+    srcs = ["src/main.rs"],
+    crate_root = "src/main.rs",
+    deps = [
+        "@crates//:serde_json",
+        "@crates//:serde-transcode",
+        "@crates//:toml",
+    ],
+)
+
+[
+    platform(
+        name = platform_name(p),
+        constraint_values = [
+            "@platforms//os:" + p.os,
+            "@platforms//cpu:"+ p.cpu,
+        ],
+    )
+    for p in PLATFORMS
+]
+
+[
+    platform_transition_filegroup(
+        name = "for_" + platform_name(p),
+        srcs = [":toml2json"],
+        target_platform = platform_name(p),
+    )
+    for p in PLATFORMS
+]
+
+filegroup(
+    name = "for_all_platforms",
+    srcs = ["for_" + platform_name(p) for p in PLATFORMS],
+)
