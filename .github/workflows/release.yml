@@ -21,3 +21,26 @@ jobs:
           files: |
             ./toml2json_*
             SHA256.txt
+
+  release_windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSVC and bazel
+      shell: cmd
+      run: |
+        choco install bazelisk --no-progress
+        bazel --version
+
+    - name: Build
+      run: .github/workflows/build_release.bat
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          toml2json_windows.exe
+          SHA256.txt

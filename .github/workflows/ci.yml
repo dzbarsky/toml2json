@@ -1,0 +1,32 @@
+name: Build with MSVC
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSVC and bazel
+      shell: cmd
+      run: |
+        choco install bazelisk --no-progress
+        bazel --version
+
+    - name: Build with MSVC and bazel
+      shell: cmd
+      run: |
+        bazel build //:for_windows_platforms --noshow_progress
+
+    - name: Upload binary artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: toml2json-windows
+        path: bazel-out/windows_x86_64-opt/bin/toml2json.exe

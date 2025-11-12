@@ -5,18 +5,19 @@ bazel_dep(name = "hermetic_cc_toolchain", version = "4.0.0")
 cc_toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
 use_repo(cc_toolchains, "zig_sdk")
 
-register_toolchains(
-    "@zig_sdk//toolchain/...",
-    "@zig_sdk//libc_aware/toolchain/...",
-)
+# register_toolchains(
+#     "@zig_sdk//toolchain/...",
+#     "@zig_sdk//libc_aware/toolchain/...",
+# )
 
 TRIPLES = [
     "aarch64-apple-darwin",
     "x86_64-apple-darwin",
     "aarch64-unknown-linux-gnu",
     "x86_64-unknown-linux-gnu",
-    # TODO(zbarsky): Enable windows?
+    # does not work, https://github.com/bazelbuild/rules_rust/issues/3619
     # "x86_64-pc-windows-gnu",
+    "x86_64-pc-windows-msvc",
     # "aarch64-pc-windows-msvc",
 ]
 
@@ -32,13 +33,18 @@ use_repo(rust, "rust_toolchains")
 
 register_toolchains("@rust_toolchains//:all")
 
+# Circular dependency between toml2json and rules_rs; disable rules_rs until
+# a Windows binary of toml2json is available.
+# bazel_dep(name = "rules_rs", version = "0.0.7")
 
-bazel_dep(name = "rules_rs", version = "0.0.7")
-
-crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
+# crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
+crate = use_extension(
+    "@rules_rust//crate_universe:extensions.bzl",
+    "crate",
+)
 crate.from_cargo(
-    cargo_lock = "//:Cargo.lock",
-    cargo_toml = "//:Cargo.toml",
-    platform_triples = TRIPLES,
+    cargo_lockfile = "//:Cargo.lock",
+    manifests = ["//:Cargo.toml"],
+    # platform_triples = TRIPLES,
 )
 use_repo(crate, "crates")
