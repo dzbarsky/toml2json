@@ -1,32 +1,37 @@
-name: Build with MSVC
+name: Build
 
 on:
   push:
     branches:
-    - master
+      - master
   pull_request:
+
+name: Build
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
+      - name: Build
+        run: .github/workflows/build_release.sh
+
+  build_windows_amd64:
+    runs-on: windows-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup MSVC and bazel
-      shell: cmd
-      run: |
-        choco install bazelisk --no-progress
-        bazel --version
+    - name: Build
+      run: .github/workflows/build_release_windows_amd64.bat
 
-    - name: Build with MSVC and bazel
-      shell: cmd
-      run: |
-        bazel build //:for_windows_platforms --noshow_progress
+  build_windows_arm64:
+    runs-on: windows-11-arm
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name: Upload binary artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: toml2json-windows
-        path: bazel-out/windows_x86_64-opt/bin/toml2json.exe
+    - name: Build
+      run: .github/workflows/build_release_windows_arm64.bat

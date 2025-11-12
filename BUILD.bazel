@@ -1,6 +1,6 @@
 load("@bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
 load("@rules_rust//rust:defs.bzl", "rust_binary")
-load("//:defs.bzl", "PLATFORMS", "platform_name", "WINDOWS_PLATFORMS", "LINUX_PLATFORMS")
+load("//:defs.bzl", "PLATFORMS", "platform_name")
 
 rust_binary(
     name = "toml2json",
@@ -34,11 +34,6 @@ rust_binary(
 ]
 
 filegroup(
-    name = "for_linux_platforms",
-    srcs = ["for_" + platform_name(p) for p in LINUX_PLATFORMS],
-)
-
-filegroup(
-    name = "for_windows_platforms",
-    srcs = ["for_" + platform_name(p) for p in WINDOWS_PLATFORMS],
+    name = "for_non_windows_platforms",
+    srcs = ["for_" + platform_name(p) for p in PLATFORMS if p.os != "windows"],
 )

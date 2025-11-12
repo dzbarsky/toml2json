@@ -1,0 +1,24 @@
+diff --git a/third_party/llvm-project/20.x/compiler-rt/BUILD.tpl b/third_party/llvm-project/20.x/compiler-rt/BUILD.tpl
+index bf5e109..9425192 100644
+--- a/third_party/llvm-project/20.x/compiler-rt/BUILD.tpl
++++ b/third_party/llvm-project/20.x/compiler-rt/BUILD.tpl
+@@ -301,6 +301,7 @@ cc_stage2_library(
+     srcs = select({
+         "@toolchains_llvm_bootstrapped//platforms/config:linux_x86_64": [":builtins_x86_64_sources"],
+         "@toolchains_llvm_bootstrapped//platforms/config:linux_aarch64": [":builtins_aarch64_sources"],
++        "@toolchains_llvm_bootstrapped//platforms/config:macos_x86_64": [":builtins_x86_64_sources"],
+         "@toolchains_llvm_bootstrapped//platforms/config:macos_aarch64": [":builtins_aarch64_sources"],
+     }, no_match_error = """
+         Platform not supported for compiler-rt.builtins.
+diff --git a/toolchain/args/BUILD.bazel b/toolchain/args/BUILD.bazel
+index 9700506..f66d5ca 100644
+--- a/toolchain/args/BUILD.bazel
++++ b/toolchain/args/BUILD.bazel
+@@ -29,6 +29,7 @@ cc_args(
+         "//platforms/config/libc_aware:linux_aarch64_gnu": ["aarch64-linux-gnu"],
+         "//platforms/config/libc_aware:linux_x86_64_musl": ["x86_64-linux-musl"],
+         "//platforms/config/libc_aware:linux_aarch64_musl": ["aarch64-linux-musl"],
++        "//platforms/config:macos_x86_64": ["x86_64-apple-darwin"],
+         "//platforms/config:macos_aarch64": ["aarch64-apple-darwin"],
+     }, no_match_error = "Unsupported platform"),
+ )
