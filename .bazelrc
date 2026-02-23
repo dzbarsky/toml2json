@@ -1,5 +1,6 @@
 common --experimental_platform_in_output_dir
 common --enable_platform_specific_config
+common:linux --host_platform=@rules_rs//rs/experimental/platforms:x86_64-unknown-linux-gnu
 
 common --incompatible_enable_cc_toolchain_resolution
 common --incompatible_strict_action_env
