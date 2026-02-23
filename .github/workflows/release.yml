@@ -21,35 +21,3 @@ jobs:
           files: |
             toml2json_*
             SHA256.txt
-
-  release_windows_amd64:
-    runs-on: windows-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Build
-      run: .github/workflows/build_release_windows_amd64.bat
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          toml2json_windows_amd64.exe
-          SHA256_windows_amd64.txt
-
-  release_windows_arm64:
-    runs-on: windows-11-arm
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Build
-      run: .github/workflows/build_release_windows_arm64.bat
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          toml2json_windows_arm64.exe
-          SHA256_windows_arm64.txt

@@ -12,9 +12,3 @@ toml = {version = "0.9", default-features = false, features = ["parse", "serde"]
 serde_json = {version = "1", default-features = false, features = ["alloc", "std"]}
 serde-transcode = { version = "1", default-features = false }
 
-[profile.release]
-lto = "fat"
-opt-level = 3
-codegen-units = 1
-panic = "abort"
-strip = "symbols"
