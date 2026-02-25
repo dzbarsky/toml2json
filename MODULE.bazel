@@ -2,8 +2,6 @@ bazel_dep(name = "bazel_lib", version = "3.2.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "llvm", version = "0.6.0")
 
-register_toolchains("@llvm//toolchain:all")
-
 bazel_dep(name = "rules_rs", version = "0.0.33")
 
 rules_rust = use_extension("@rules_rs//rs/experimental:rules_rust.bzl", "rules_rust")
