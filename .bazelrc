@@ -7,9 +7,10 @@ common --incompatible_enable_cc_toolchain_resolution
 common --incompatible_strict_action_env
 
 common --@llvm//config:experimental_stub_libgcc_s
-common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
-common:linux --extra_toolchains=@toolchains_llvm_bootstrapped//toolchain:all
-common:macos --extra_toolchains=@toolchains_llvm_bootstrapped//toolchain:all
+common:linux --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common:macos --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common:linux --extra_toolchains=@llvm//toolchain:all
+common:macos --extra_toolchains=@llvm//toolchain:all
 
 common -c opt
 common --@rules_rust//:extra_rustc_flags=-Clto=fat
