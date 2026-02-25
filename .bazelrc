@@ -1,6 +1,9 @@
 common --experimental_platform_in_output_dir
 common --enable_platform_specific_config
 
+common:linux --host_platform=//:local_linux_platform
+common:windows --host_platform=//:local_windows_platform
+
 common --incompatible_enable_cc_toolchain_resolution
 common --incompatible_strict_action_env
 
