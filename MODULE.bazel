@@ -1,14 +1,6 @@
-bazel_dep(name = "bazel_lib", version = "3.0.0")
+bazel_dep(name = "bazel_lib", version = "3.2.0")
 bazel_dep(name = "platforms", version = "1.0.0")
-bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.2.5")
-single_version_override(
-    module_name = "toolchains_llvm_bootstrapped",
-    patch_strip = 1,
-    patches = [
-        "//:llvm_osx_sysroot.patch",
-        "//:toolchains_llvm_bootstrapped.patch",
-    ],
-)
+bazel_dep(name = "llvm", version = "0.6.0")
 
 TRIPLES = [
     "aarch64-apple-darwin",
