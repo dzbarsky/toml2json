@@ -2,49 +2,33 @@ bazel_dep(name = "bazel_lib", version = "3.2.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "llvm", version = "0.6.0")
 
-TRIPLES = [
-    "aarch64-apple-darwin",
-    "x86_64-apple-darwin",
-    "aarch64-unknown-linux-gnu",
-    "x86_64-unknown-linux-gnu",
-    # does not work, https://github.com/bazelbuild/rules_rust/issues/3619
-    # "x86_64-pc-windows-gnu",
-    "x86_64-pc-windows-msvc",
-    "aarch64-pc-windows-msvc",
-]
+bazel_dep(name = "rules_rs", version = "0.0.33")
 
-bazel_dep(name = "rules_rust", version = "0.66.0")
+rules_rust = use_extension("@rules_rs//rs/experimental:rules_rust.bzl", "rules_rust")
+use_repo(rules_rust, "rules_rust")
 
-rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(
+toolchains = use_extension("@rules_rs//rs/experimental/toolchains:module_extension.bzl", "toolchains")
+toolchains.toolchain(
     edition = "2024",
-    extra_target_triples = TRIPLES,
-    versions = ["1.89.0"],
+    version = "1.93.1",
 )
-use_repo(rust, "rust_toolchains")
-
-register_toolchains("@rust_toolchains//:all")
-
-bazel_dep(name = "rules_rs", version = "0.0.13")
-
+use_repo(toolchains, "default_rust_toolchains")
+ 
+register_toolchains("@default_rust_toolchains//:all")
+ 
 crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
 crate.from_cargo(
     cargo_lock = "//:Cargo.lock",
     cargo_toml = "//:Cargo.toml",
-    platform_triples = TRIPLES,
+    platform_triples = [
+        "aarch64-apple-darwin",
+        "x86_64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
+        "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl",
+        "x86_64-pc-windows-msvc",
+        "aarch64-pc-windows-msvc",
+    ]
 )
 use_repo(crate, "crates")
-
-"""
-
-crate = use_extension(
-    "@rules_rust//crate_universe:extensions.bzl",
-    "crate",
-)
-crate.from_cargo(
-    cargo_lockfile = "//:Cargo.lock",
-    manifests = ["//:Cargo.toml"],
-    supported_platform_triples = TRIPLES,
-)
-use_repo(crate, "crates")
-"""

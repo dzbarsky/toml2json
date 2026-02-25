@@ -1,6 +1,5 @@
 load("@bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
-load("@rules_rust//rust:defs.bzl", "rust_binary")
-load("//:defs.bzl", "PLATFORMS", "platform_name")
+load("@rules_rs//rs:rust_binary.bzl", "rust_binary")
 
 rust_binary(
     name = "toml2json",
@@ -14,26 +13,28 @@ rust_binary(
 )
 
 [
-    platform(
-        name = platform_name(p),
-        constraint_values = [
-            "@platforms//os:" + p.os,
-            "@platforms//cpu:"+ p.cpu,
-        ],
-    )
-    for p in PLATFORMS
-]
-
-[
     platform_transition_filegroup(
-        name = "for_" + platform_name(p),
+        name = "for_" + triple,
         srcs = [":toml2json"],
-        target_platform = platform_name(p),
+        target_platform = "@rules_rs//rs/experimental/platforms:" + triple,
     )
     for p in PLATFORMS
+    for triple in [
+        "aarch64-apple-darwin",
+        "x86_64-apple-darwin",
+        "aarch64-unknown-linux-musl",
+        "x86_64-unknown-linux-musl",
+        "aarch64-pc-windows-msvc",
+        "x86_64-pc-windows-msvc",
+    ]
 ]
 
 filegroup(
     name = "for_non_windows_platforms",
-    srcs = ["for_" + platform_name(p) for p in PLATFORMS if p.os != "windows"],
+    srcs = [
+        "for_aarch64-apple-darwin",
+        "for_x86_64-apple-darwin",
+        "for_aarch64-unknown-linux-musl",
+        "for_x86_64-unknown-linux-musl",
+    ],
 )
