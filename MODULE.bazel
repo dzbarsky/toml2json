@@ -1,17 +1,7 @@
 bazel_dep(name = "bazel_lib", version = "3.2.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "llvm", version = "0.6.0")
-bazel_dep(name = "rules_rs", version = "0.0.36")
-
-single_version_override(
-    module_name = "rules_rs",
-    version = "0.0.36",
-    patches = [
-        "//:ffa8821744e94eb17d2c4c3edec5e3b01b7caaa1.patch",
-        "//:revert_toml2json_to_v0.0.7.patch",
-    ],
-    patch_strip = 1,
-)
+bazel_dep(name = "rules_rs", version = "0.0.37")
 
 rules_rust = use_extension("@rules_rs//rs/experimental:rules_rust.bzl", "rules_rust")
 use_repo(rules_rust, "rules_rust")
