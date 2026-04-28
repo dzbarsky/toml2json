@@ -6,7 +6,7 @@ rust_binary(
     srcs = ["src/main.rs"],
     crate_root = "src/main.rs",
     rustc_flags = select({
-        "@rules_rs//rs/platforms/constraints:windows_msvc": ["-Ctarget-feature=+crt-static"],
+        "@rules_rs//rs/experimental/platforms/constraints:windows_msvc": ["-Ctarget-feature=+crt-static"],
         "//conditions:default": [],
     }),
     deps = [
@@ -20,7 +20,7 @@ rust_binary(
     platform_transition_filegroup(
         name = "for_" + triple,
         srcs = [":toml2json"],
-        target_platform = "@rules_rs//rs/platforms:" + triple,
+        target_platform = "@rules_rs//rs/experimental/platforms:" + triple,
     )
     for triple in [
         "aarch64-apple-darwin",
@@ -33,11 +33,13 @@ rust_binary(
 ]
 
 filegroup(
-    name = "for_non_windows_platforms",
+    name = "for_all_platforms",
     srcs = [
         "for_aarch64-apple-darwin",
+        "for_aarch64-pc-windows-msvc",
         "for_aarch64-unknown-linux-musl",
         "for_x86_64-apple-darwin",
+        "for_x86_64-pc-windows-msvc",
         "for_x86_64-unknown-linux-musl",
     ],
 )
@@ -53,7 +55,7 @@ platform(
 platform(
     name = "local_windows_platform",
     constraint_values = [
-        "@rules_rs//rs/platforms/constraints:windows_msvc",
+        "@rules_rs//rs/experimental/platforms/constraints:windows_msvc",
     ],
     parents = ["@platforms//host"],
 )

@@ -1,12 +1,38 @@
 bazel_dep(name = "bazel_lib", version = "3.2.0")
 bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "rules_cc", version = "0.2.17")
 bazel_dep(name = "llvm", version = "0.7.5")
-bazel_dep(name = "rules_rs", version = "0.0.62")
+bazel_dep(name = "rules_rs", version = "0.0.58")
+bazel_dep(name = "windows_support", version = "0.1.1")
 
-rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
+# TODO(archangelx360): remove once https://github.com/hermeticbuild/hermetic-llvm/pull/187 is merged
+archive_override(
+    module_name = "llvm",
+    integrity = "sha256-vaQy8Ut+vqF72oZKUpBUhpEIAz1gHnC4A0Y6kaxLVy8=",
+    strip_prefix = "toolchains_llvm_bootstrapped-1dd9c3dabf5d56ce8a2905a4e2fa752acefa09b4",
+    urls = ["https://github.com/ArchangelX360/toolchains_llvm_bootstrapped/archive/1dd9c3dabf5d56ce8a2905a4e2fa752acefa09b4.tar.gz"],
+)
+
+# TODO(archangelx360): remove once https://github.com/bazelbuild/rules_cc/pull/561 is merged
+archive_override(
+    module_name = "rules_cc",
+    integrity = "sha256-w4NREZoF1GQJaBI+z3SP0ceb54vl9s221+mjor/UBRA=",
+    strip_prefix = "rules_cc-2d9cb5a3c0b94ee408cd3946185a9608d2113ebd",
+    urls = ["https://github.com/ArchangelX360/rules_cc/archive/2d9cb5a3c0b94ee408cd3946185a9608d2113ebd.tar.gz"],
+)
+
+# TODO(archangelx360): remove once MSVC support is merged to `rules_rs`
+archive_override(
+    module_name = "rules_rs",
+    integrity = "sha256-Khmf5nhdCyPkbvBd0+9Hr0phupjQ2/+0bXGiiHU83+Y=",
+    strip_prefix = "rules_rs-ee8aae35332bb2e0efe2598ff7b7edc56ec92687",
+    urls = ["https://github.com/ArchangelX360/rules_rs/archive/ee8aae35332bb2e0efe2598ff7b7edc56ec92687.tar.gz"],
+)
+
+rules_rust = use_extension("@rules_rs//rs/experimental:rules_rust.bzl", "rules_rust")
 use_repo(rules_rust, "rules_rust")
 
-toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")
+toolchains = use_extension("@rules_rs//rs/experimental/toolchains:module_extension.bzl", "toolchains")
 toolchains.toolchain(
     edition = "2024",
     version = "1.93.1",
@@ -29,5 +55,31 @@ crate.from_cargo(
         "x86_64-pc-windows-msvc",
         "aarch64-pc-windows-msvc",
     ],
+    use_experimental_platforms = True,
 )
 use_repo(crate, "crates")
+
+msvc_runtime = use_extension("@windows_support//windows:extensions.bzl", "msvc_runtime")
+msvc_runtime.configure(
+    msvc_version = "14.50.35717",
+    visual_studio_installer_manifest_integrity = "sha256-qOhU+p8/uurCfXME4pfxZg1xN0ATid61fPeYPzPBb+8=",
+    visual_studio_installer_manifest_url = "https://download.visualstudio.microsoft.com/download/pr/fdc37f6e-59f6-4054-838a-b476eeaa6ec3/1d82370739911457e0a2f6be15d8b5f569531b352b2eabb961429eea1e99e356/VisualStudio.vsman",
+)
+use_repo(msvc_runtime, "msvc_runtime")
+
+windows_sdk = use_extension("@windows_support//windows:extensions.bzl", "windows_sdk")
+windows_sdk.configure(
+    transformations = {
+        # TODO: change using vfs when available
+        "**/*.h": "lowercase",
+        "**/*.lib": "lowercase",
+        "**/*.Lib": "lowercase",
+    },
+    windows_sdk_integrity = {
+        "Microsoft.Windows.SDK.CPP": "sha256-/0VWYL7gcadEcVqWZWZvopwHaBV509gVlZqe7FpVZCQ=",
+        "Microsoft.Windows.SDK.CPP.x64": "sha256-rWzpD/lAEGmdKVSLPCseUsieuBFD4hmRVdmlw4ABtSs=",
+        "Microsoft.Windows.SDK.CPP.arm64": "sha256-A7wMA9Q5zvhQdLvNQl+dXTptO0Z5Z6zSHaO6bf7q+mc=",
+    },
+    windows_sdk_version = "10.0.26100.7705",
+)
+use_repo(windows_sdk, "windows_sdk")
