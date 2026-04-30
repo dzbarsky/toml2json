@@ -21,6 +21,15 @@ archive_override(
     urls = ["https://github.com/ArchangelX360/rules_cc/archive/cb995b18db7c855fe95cacf0a0e84fda8c58725d.tar.gz"],
 )
 
+# TODO(archangelx360): remove once https://github.com/hermeticbuild/hermetic-llvm/pull/187 is merged, and that patch upstream in `rules_rs`
+single_version_override(
+    module_name = "rules_rs",
+    patch_strip = 1,
+    patches = [
+        "//:rules_rs-msvc.patch",
+    ],
+)
+
 rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
 use_repo(rules_rust, "rules_rust")
 
