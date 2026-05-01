@@ -8,9 +8,9 @@ bazel_dep(name = "windows_support", version = "0.1.1")
 # TODO(archangelx360): remove once https://github.com/hermeticbuild/hermetic-llvm/pull/187 is merged
 archive_override(
     module_name = "llvm",
-    integrity = "sha256-KVI+wLovWUjwo6me9tQR68Uh49T/DYTNdrlCmF9QVfU=",
-    strip_prefix = "toolchains_llvm_bootstrapped-f8331ebec1192b94c1b0ef89f32909eb02b867de",
-    urls = ["https://github.com/ArchangelX360/toolchains_llvm_bootstrapped/archive/f8331ebec1192b94c1b0ef89f32909eb02b867de.tar.gz"],
+    integrity = "sha256-2t00C9DpjLPoGw7JZieH5NLzBCUa0t32QhHKSUMasI8=",
+    strip_prefix = "toolchains_llvm_bootstrapped-85d29dc776702879eb9cbcbe560428df7fd24e64",
+    urls = ["https://github.com/ArchangelX360/toolchains_llvm_bootstrapped/archive/85d29dc776702879eb9cbcbe560428df7fd24e64.tar.gz"],
 )
 
 # TODO(archangelx360): remove once https://github.com/bazelbuild/rules_cc/pull/561 is merged
