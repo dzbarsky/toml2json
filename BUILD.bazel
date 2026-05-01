@@ -56,7 +56,7 @@ platform(
     name = "local_windows_platform",
     constraint_values = [
         "@rules_rs//rs/platforms/constraints:windows_msvc",
-        "@llvm//constraints/abi:msvc",
+        "@llvm//constraints/windows/abi:msvc",
     ],
     parents = ["@platforms//host"],
 )
