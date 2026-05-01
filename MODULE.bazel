@@ -1,8 +1,8 @@
 bazel_dep(name = "bazel_lib", version = "3.2.2")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "rules_cc", version = "0.2.17")
-bazel_dep(name = "llvm", version = "0.7.6")
-bazel_dep(name = "rules_rs", version = "0.0.68")
+bazel_dep(name = "llvm", version = "0.7.7")
+bazel_dep(name = "rules_rs", version = "0.0.69")
 bazel_dep(name = "windows_support", version = "0.1.1")
 
 # TODO(archangelx360): remove once https://github.com/hermeticbuild/hermetic-llvm/pull/187 is merged
@@ -19,15 +19,6 @@ archive_override(
     integrity = "sha256-yLVbuU8I/7wTSmCifWYUqY45Q5aMRqWZkkkX6uXaFio=",
     strip_prefix = "rules_cc-cb995b18db7c855fe95cacf0a0e84fda8c58725d",
     urls = ["https://github.com/ArchangelX360/rules_cc/archive/cb995b18db7c855fe95cacf0a0e84fda8c58725d.tar.gz"],
-)
-
-# TODO(archangelx360): remove once https://github.com/hermeticbuild/hermetic-llvm/pull/187 is merged, and that patch upstream in `rules_rs`
-single_version_override(
-    module_name = "rules_rs",
-    patch_strip = 1,
-    patches = [
-        "//:rules_rs-msvc.patch",
-    ],
 )
 
 rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
